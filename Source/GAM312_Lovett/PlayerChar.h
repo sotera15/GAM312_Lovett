@@ -27,21 +27,63 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// Handles forward and backward movement input from the player
 	UFUNCTION()
-	void MoveForward(float axisValue);
+		void MoveForward(float axisValue);
 
+	// Handles left and right movement (strafing) input from the player
 	UFUNCTION()
-	void MoveRight(float axisValue);
+		void MoveRight(float axisValue);
 
+	// Called when the player presses the jump input to begin jumping
 	UFUNCTION()
-	void StartJump();
+		void StartJump();
 
+	// Called when the player releases the jump input to stop jumping
 	UFUNCTION()
-	void StopJump();
+		void StopJump();
 
+	// Attempts to locate or interact with an object in front of the player
 	UFUNCTION()
-	void FindObject();
+		void FindObject();
 
+	// Camera component attached to the player character for the player's view
 	UPROPERTY(VisibleAnywhere)
-	UCameraComponent* PlayerCamComp;
+		UCameraComponent* PlayerCamComp;
+
+	// Player's health value (max default is 100)
+	// Can be edited in the editor and accessed in Blueprints
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+		float Health = 100.0f;
+
+	// Player's hunger level (used for survival mechanics)
+	// Can be edited in the editor and accessed in Blueprints
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+		float Hunger = 100.0f;
+
+	// Player's stamina value (used for actions like running or jumping)
+	// Can be edited in the editor and accessed in Blueprints
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+		float Stamina = 100.0f;
+
+	// Function to increase or modify the player's health by a given amount
+	// Can be called from Blueprints
+	UFUNCTION(BlueprintCallable)
+		void SetHealth(float amount);
+
+	// Function to increase or modify the player's hunger by a given amount
+	// Can be called from Blueprints
+	UFUNCTION(BlueprintCallable)
+		void SetHunger(float amount);
+
+	// Function to modify the player's stamina
+	// Can be called from Blueprints
+	UFUNCTION(BlueprintCallable)
+		void SetStamina(float amount);
+
+	// Function used to decrease multiple player stats over time (such as hunger or stamina)
+	// Often used for survival mechanics like gradual stat decay
+	UFUNCTION(BlueprintCallable)
+		void DecreaseStats();
+
 };
