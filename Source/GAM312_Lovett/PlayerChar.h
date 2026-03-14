@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Camera/CameraComponent.h"
+#include "Resource_M.h"
 #include "PlayerChar.generated.h"
 
 UCLASS()
@@ -66,6 +67,27 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
 		float Stamina = 100.0f;
 
+	// Amount of wood the player currently has
+	UPROPERTY(EditAnywhere, Category = "Resources")
+		int Wood;
+
+	// Amount of stone the player currently has
+	UPROPERTY(EditAnywhere, Category = "Resources")
+		int Stone;
+
+	// Amount of berries the player currently has
+	UPROPERTY(EditAnywhere, Category = "Resources")
+		int Berry;
+
+	// Array storing the quantities of each resource
+	// Can be accessed and modified in Blueprints
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resources")
+		TArray<int> ResourcesArray;
+
+	// Array storing the names of the resources
+	UPROPERTY(EditAnywhere, Category = "Resources")
+		TArray<FString> ResourcesNameArray;
+
 	// Function to increase or modify the player's health by a given amount
 	// Can be called from Blueprints
 	UFUNCTION(BlueprintCallable)
@@ -83,7 +105,9 @@ public:
 
 	// Function used to decrease multiple player stats over time (such as hunger or stamina)
 	// Often used for survival mechanics like gradual stat decay
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 		void DecreaseStats();
 
+	UFUNCTION()
+		void GiveResource(float amount, FString resourceType);
 };
