@@ -18,6 +18,11 @@ APlayerChar::APlayerChar()
 
 	// Allows the camera to rotate based on the player's controller input (mouse/gamepad)
 	PlayerCamComp->bUsePawnControlRotation = true;
+
+	ResourcesArray.SetNum(3);
+	ResourcesNameArray.Add(TEXT("Wood"));
+	ResourcesNameArray.Add(TEXT("Stone"));
+	ResourcesNameArray.Add(TEXT("Berry"));
 }
 
 // Called when the game starts or when spawned
@@ -25,7 +30,10 @@ void APlayerChar::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Timer handle used to control the stats timer
 	FTimerHandle StatsTimerHandle;
+
+	// Calls DecreaseStats every 2 seconds in a loop
 	GetWorld()->GetTimerManager().SetTimer(StatsTimerHandle, this, &APlayerChar::DecreaseStats, 2.0f, true);
 }
 
@@ -96,6 +104,65 @@ void APlayerChar::StopJump()
 
 void APlayerChar::FindObject()
 {
+	// Stores information about what the line trace hits
+	FHitResult HitResult;
+
+	// Starting point of the trace (player camera location)
+	FVector StartLocation = PlayerCamComp->GetComponentLocation();
+
+	// Direction of the trace based on where the camera is facing
+	// Multiplied to extend the trace distance
+	FVector Direction = PlayerCamComp->GetForwardVector() * 800.0f;
+
+	// End point of the trace
+	FVector EndLocation = StartLocation + Direction;
+
+	// Collision settings for the trace
+	FCollisionQueryParams QueryParams;
+
+	// Ignore the player character so the trace doesn't hit itself
+	QueryParams.AddIgnoredActor(this);
+
+	// Enables complex collision checking
+	QueryParams.bTraceComplex = true;
+
+	// Allows returning the face index of the hit surface
+	QueryParams.bReturnFaceIndex = true;
+
+	// Perform a line trace (raycast) from the camera forward
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, QueryParams))
+	{
+		// Try to cast the hit actor to a resource object
+		AResource_M* HitResource = Cast<AResource_M>(HitResult.GetActor());
+
+		// If the object hit is a valid resource
+		if (HitResource)
+		{
+			// Get the name of the resource
+			FString hitName = HitResource->resourceName;
+
+			// Get how much of the resource can be collected
+			int resourceValue = HitResource->resourceAmount;
+
+			// Reduce the total amount of resource remaining in the object
+			HitResource->totalResource = HitResource->totalResource - resourceValue;
+			
+			if (HitResource->totalResource > resourceValue)
+			{
+				GiveResource(resourceValue, hitName);
+
+				check(GEngine != nullptr);
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Collected"));
+			}
+			else
+			{
+				HitResource->Destroy();
+				check(GEngine != nullptr);
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Depleted"));
+
+			}
+		}
+	}
 }
 
 // Adjusts the player's health by the given amount
@@ -151,6 +218,28 @@ void APlayerChar::DecreaseStats()
 	if (Hunger <= 0)
 	{
 		SetHealth(-3.0f);
+	}
+}
+
+void APlayerChar::GiveResource(float amount, FString resourceType)
+{
+	// Add the collected amount to the correct resource in the player's inventory
+	if (resourceType == "Wood")
+	{
+		// Increase the amount of wood by the collected amount
+		ResourcesArray[0] = ResourcesArray[0] + amount;
+	}
+
+	if (resourceType == "Stone")
+	{
+		// Increase the amount of stone by the collected amount
+		ResourcesArray[1] = ResourcesArray[1] + amount;
+	}
+
+	if (resourceType == "Berry")
+	{
+		// Increase the amount of berries by the collected amount
+		ResourcesArray[2] = ResourcesArray[2] + amount;
 	}
 }
 
