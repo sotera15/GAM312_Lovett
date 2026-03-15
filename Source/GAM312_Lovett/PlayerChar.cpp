@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+#include "DrawDebugHelpers.h"
 #include "PlayerChar.h"
 
 // Sets default values
@@ -66,6 +66,9 @@ void APlayerChar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	// Calls StopJump when the jump button is released
 	PlayerInputComponent->BindAction("JumpEvent", IE_Released, this, &APlayerChar::StopJump);
+
+	// Binds the FindObject action to the corresponding function when the key is pressed
+	PlayerInputComponent->BindAction("FindObject", IE_Pressed, this, &APlayerChar::FindObject);
 }
 
 // Handles forward and backward movement
@@ -124,7 +127,7 @@ void APlayerChar::FindObject()
 	QueryParams.AddIgnoredActor(this);
 
 	// Enables complex collision checking
-	QueryParams.bTraceComplex = true;
+	QueryParams.bTraceComplex = false;
 
 	// Allows returning the face index of the hit surface
 	QueryParams.bReturnFaceIndex = true;
@@ -134,6 +137,9 @@ void APlayerChar::FindObject()
 	{
 		// Try to cast the hit actor to a resource object
 		AResource_M* HitResource = Cast<AResource_M>(HitResult.GetActor());
+
+		// Draw a debug line to visualize the trace (for testing purposes)
+		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Purple, false, 3.0f);
 
 		// If the object hit is a valid resource
 		if (HitResource)
@@ -147,12 +153,14 @@ void APlayerChar::FindObject()
 			// Reduce the total amount of resource remaining in the object
 			HitResource->totalResource = HitResource->totalResource - resourceValue;
 			
-			if (HitResource->totalResource > resourceValue)
+			if (HitResource->totalResource >= resourceValue)
 			{
 				GiveResource(resourceValue, hitName);
 
 				check(GEngine != nullptr);
 				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Collected"));
+				HitResource->Destroy();
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, hitName + " Collected: " + FString::FromInt(HitResource->resourceAmount)); // Display the amount of resource collected
 			}
 			else
 			{
