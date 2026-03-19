@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "DrawDebugHelpers.h"
 #include "PlayerChar.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 APlayerChar::APlayerChar()
@@ -139,7 +139,7 @@ void APlayerChar::FindObject()
 		AResource_M* HitResource = Cast<AResource_M>(HitResult.GetActor());
 
 		// Draw a debug line to visualize the trace (for testing purposes)
-		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Purple, false, 3.0f);
+		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Cyan, false, 3.0f);
 
 		// If the object hit is a valid resource
 		if (HitResource)
@@ -159,12 +159,10 @@ void APlayerChar::FindObject()
 
 				check(GEngine != nullptr);
 				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Collected"));
-				HitResource->Destroy();
 				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, hitName + " Collected: " + FString::FromInt(HitResource->resourceAmount)); // Display the amount of resource collected
 			}
 			else
 			{
-				HitResource->Destroy();
 				check(GEngine != nullptr);
 				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Depleted"));
 
