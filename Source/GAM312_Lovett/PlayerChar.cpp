@@ -163,7 +163,7 @@ void APlayerChar::FindObject()
 					check(GEngine != nullptr);
 					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Collected"));
 
-					UGameplayStatics::SpawnDecalAtLocation(GetWorld(), hitDecal, FVector(10.0f, 10.0f, 10.0f) HitResult.Location, FRotator(-90,0, 0), 2.0f);
+					UGameplayStatics::SpawnDecalAtLocation(GetWorld(), hitDecal, FVector(10.0f, 10.0f, 10.0f), HitResult.Location, FRotator(-90,0, 0), 2.0f);
 
 					SetStamina(-5.0f);
 				}
