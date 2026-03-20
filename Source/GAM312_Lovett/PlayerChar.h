@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Camera/CameraComponent.h"
 #include "Resource_M.h"
+#include "Kismet/GameplayStatics.h"
 #include "PlayerChar.generated.h"
 
 UCLASS()
@@ -87,6 +88,9 @@ public:
 	// Array storing the names of the resources
 	UPROPERTY(EditAnywhere, Category = "Resources")
 		TArray<FString> ResourcesNameArray;
+
+	UPROPERTY(EditAnywhere, Category = "HitMarker")
+		UMaterialInterface* hitDecal;
 
 	// Function to increase or modify the player's health by a given amount
 	// Can be called from Blueprints
