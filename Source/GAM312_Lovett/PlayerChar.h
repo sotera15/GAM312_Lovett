@@ -89,6 +89,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Resources")
 		TArray<FString> ResourcesNameArray;
 
+	// Decal material used to show a hit effect
+	// Set this in the editor
 	UPROPERTY(EditAnywhere, Category = "HitMarker")
 		UMaterialInterface* hitDecal;
 

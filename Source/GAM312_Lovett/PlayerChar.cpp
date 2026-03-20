@@ -141,6 +141,7 @@ void APlayerChar::FindObject()
 		// Draw a debug line to visualize the trace (for testing purposes)
 		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Cyan, false, 3.0f);
 
+		// Check if the player has enough stamina to gather resources
 		if (Stamina > 5.0f)
 		{
 
@@ -156,20 +157,28 @@ void APlayerChar::FindObject()
 				// Reduce the total amount of resource remaining in the object
 				HitResource->totalResource = HitResource->totalResource - resourceValue;
 
+				// If the resource still has enough left after this hit
 				if (HitResource->totalResource >= resourceValue)
 				{
+					// Add the resource to the player's inventory
 					GiveResource(resourceValue, hitName);
 
+					// Display debug message on screen
 					check(GEngine != nullptr);
 					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Collected"));
 
+					// Spawn a decal at the hit location to show impact
 					UGameplayStatics::SpawnDecalAtLocation(GetWorld(), hitDecal, FVector(10.0f, 10.0f, 10.0f), HitResult.Location, FRotator(-90,0, 0), 2.0f);
 
+					// Reduce player stamina after gathering
 					SetStamina(-5.0f);
 				}
 				else
 				{
+					// If resource is depleted, destroy the object
 					HitResource->Destroy();
+
+					// Display debug message for depletion
 					check(GEngine != nullptr);
 					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Depleted"));
 
