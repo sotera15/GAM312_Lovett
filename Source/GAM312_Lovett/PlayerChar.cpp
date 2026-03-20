@@ -141,31 +141,39 @@ void APlayerChar::FindObject()
 		// Draw a debug line to visualize the trace (for testing purposes)
 		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Cyan, false, 3.0f);
 
-		// If the object hit is a valid resource
-		if (HitResource)
+		if (Stamina > 5.0f)
 		{
-			// Get the name of the resource
-			FString hitName = HitResource->resourceName;
 
-			// Get how much of the resource can be collected
-			int resourceValue = HitResource->resourceAmount;
-
-			// Reduce the total amount of resource remaining in the object
-			HitResource->totalResource = HitResource->totalResource - resourceValue;
-			
-			if (HitResource->totalResource >= resourceValue)
+			// If the object hit is a valid resource
+			if (HitResource)
 			{
-				GiveResource(resourceValue, hitName);
+				// Get the name of the resource
+				FString hitName = HitResource->resourceName;
 
-				check(GEngine != nullptr);
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Collected"));
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, hitName + " Collected: " + FString::FromInt(HitResource->resourceAmount)); // Display the amount of resource collected
-			}
-			else
-			{
-				check(GEngine != nullptr);
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Depleted"));
+				// Get how much of the resource can be collected
+				int resourceValue = HitResource->resourceAmount;
 
+				// Reduce the total amount of resource remaining in the object
+				HitResource->totalResource = HitResource->totalResource - resourceValue;
+
+				if (HitResource->totalResource >= resourceValue)
+				{
+					GiveResource(resourceValue, hitName);
+
+					check(GEngine != nullptr);
+					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Collected"));
+
+					UGameplayStatics::SpawnDecalAtLocation(GetWorld(), hitDecal, FVector(10.0f, 10.0f, 10.0f) HitResult.Location, FRotator(-90,0, 0), 2.0f);
+
+					SetStamina(-5.0f);
+				}
+				else
+				{
+					HitResource->Destroy();
+					check(GEngine != nullptr);
+					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Depleted"));
+
+				}
 			}
 		}
 	}
