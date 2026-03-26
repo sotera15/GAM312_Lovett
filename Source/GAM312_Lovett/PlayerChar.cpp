@@ -19,11 +19,16 @@ APlayerChar::APlayerChar()
 	// Allows the camera to rotate based on the player's controller input (mouse/gamepad)
 	PlayerCamComp->bUsePawnControlRotation = true;
 
+	// Set the size of the BuildingArray to hold 3 elements
 	BuildingArray.SetNum(3);
+
+	// Set the size of the ResourcesArray to hold 3 elements
 	ResourcesArray.SetNum(3);
-	ResourcesNameArray.Add(TEXT("Wood"));
-	ResourcesNameArray.Add(TEXT("Stone"));
-	ResourcesNameArray.Add(TEXT("Berry"));
+
+	// Add resource names to the ResourcesNameArray
+	ResourcesNameArray.Add(TEXT("Wood")); 
+	ResourcesNameArray.Add(TEXT("Stone")); 
+	ResourcesNameArray.Add(TEXT("Berry")); 
 }
 
 // Called when the game starts or when spawned
