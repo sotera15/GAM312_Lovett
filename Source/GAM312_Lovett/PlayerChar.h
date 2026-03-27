@@ -7,7 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Resource_M.h"
 #include "Kismet/GameplayStatics.h"
-#include "Buildingpart.h"
+#include "BuildingPart.h"
 #include "PlayerChar.generated.h"
 
 UCLASS()
