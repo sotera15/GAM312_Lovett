@@ -8,6 +8,7 @@
 #include "Resource_M.h"
 #include "Kismet/GameplayStatics.h"
 #include "BuildingPart.h"
+#include "Player_W.h"
 #include "PlayerChar.generated.h"
 
 UCLASS()
@@ -114,6 +115,9 @@ public:
 	// Used for placing or updating the object
 	UPROPERTY()
 	ABuildingPart* spawnedPart;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPlayer_W* PlayerUI;
 
 	// Function to increase or modify the player's health by a given amount
 	// Can be called from Blueprints
