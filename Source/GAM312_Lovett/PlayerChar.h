@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "BuildingPart.h"
 #include "Player_W.h"
+#include "ObjectiveWidget.h"
 #include "PlayerChar.generated.h"
 
 UCLASS()
@@ -116,8 +117,22 @@ public:
 	UPROPERTY()
 	ABuildingPart* spawnedPart;
 
+	// Player UI reference (can be set in editor and used in Blueprints)
+	// Pointer to the player UI widget
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UPlayer_W* PlayerUI;
+
+	// Objective UI widget (settable in editor, accessible in Blueprints)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UObjectiveWidget* objWidget;
+
+	// Number of objects built
+	UPROPERTY()
+	float objectsBuilt;
+
+	// Amount of materials collected
+	UPROPERTY()
+	float matsCollected;
 
 	// Function to increase or modify the player's health by a given amount
 	// Can be called from Blueprints
