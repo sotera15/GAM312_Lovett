@@ -13,9 +13,13 @@ UCLASS()
 class GAM312_LOVETT_API UPlayer_W : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 public:
 
+	// This function can be implemented in Blueprint (not in C++)
+	// It is used to update the UI bars (health, hunger, stamina)
 	UFUNCTION(BlueprintImplementableEvent)
+
+	// Values passed to update the UI
 	void UpdateBars(float Health1, float Hunger1, float Stamina1);
 };

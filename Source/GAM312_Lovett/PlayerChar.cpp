@@ -48,15 +48,25 @@ void APlayerChar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// Update the UI with current player stats
 	PlayerUI->UpdateBars(Health, Hunger, Stamina);
 
+	// Check if the player is in building mode
 	if (isBuilding)
 	{
+		// Make sure there is a spawned building part
 		if (spawnedPart)
 		{
+			// Get the camera's current position
 			FVector StartLocation = PlayerCamComp->GetComponentLocation();
+
+			// Get the forward direction of the camera and extend it outward
 			FVector Direction = PlayerCamComp->GetForwardVector() * 400.0f;
+
+			// Calculate the final position in front of the player
 			FVector EndLocation = StartLocation + Direction;
+
+			// Move the spawned building part to that position
 			spawnedPart->SetActorLocation(EndLocation);
 		}
 	}
@@ -297,60 +307,86 @@ void APlayerChar::GiveResource(float amount, FString resourceType)
 
 void APlayerChar::UpdateResources(float woodAmount, float stoneAmount, FString buildingObject)
 {
+	// Check if the player has enough wood
 	if (woodAmount <= ResourcesArray[0])
 	{
+		// Check if the player also has enough stone
 		if (stoneAmount <= ResourcesArray[1])
 		{
+			// Subtract the used wood and stone from the resource array
 			ResourcesArray[0] = ResourcesArray[0] - woodAmount;
 			ResourcesArray[1] = ResourcesArray[1] - stoneAmount;
 
+			// Check which building type is being crafted
+
 			if (buildingObject == "Wall")
 			{
+				// Increase the number of walls built
 				BuildingArray[0] = BuildingArray[0] + 1;
 			}
 
 			if (buildingObject == "Floor")
 			{
+				// Increase the number of floors built
 				BuildingArray[1] = BuildingArray[1] + 1;
 			}
 
 			if (buildingObject == "Ceiling")
 			{
+				// Increase the number of ceilings built
 				BuildingArray[2] = BuildingArray[2] + 1;
 			}
 		}
-
 	}
 }
 
 void APlayerChar::SpawnBuilding(int buildingID, bool& isSuccess)
 {
+	// Check if the player is NOT already in building mode
 	if (!isBuilding)
 	{
+		// Check if the player has at least one of the selected building piece
 		if (BuildingArray[buildingID] >= 1)
 		{
+			// Enable building mode
 			isBuilding = true;
+
+			// Set up spawn parameters for the new building part
 			FActorSpawnParameters SpawnParams;
+
+			// Get the camera's current position
 			FVector StartLocation = PlayerCamComp->GetComponentLocation();
+
+			// Get forward direction and move it outward
 			FVector Direction = PlayerCamComp->GetForwardVector() * 400.0f;
+
+			// Calculate where the building part should spawn
 			FVector EndLocation = StartLocation + Direction;
+
+			// Set default rotation for the spawned object
 			FRotator myRot(0, 0, 0);
 
+			// Decrease the amount of this building piece in inventory
 			BuildingArray[buildingID] = BuildingArray[buildingID] - 1;
 
+			// Spawn the building part in the world
 			spawnedPart = GetWorld()->SpawnActor<ABuildingPart>(BuildPartClass, EndLocation, myRot, SpawnParams);
 
+			// Mark the action as successful
 			isSuccess = true;
 		}
 
+		// If conditions were not met, mark as failed
 		isSuccess = false;
 	}
 }
 
 void APlayerChar::RotateBuilding()
 {
+	// Check if the player is currently in building mode
 	if (isBuilding)
 	{
+		// Rotate the spawned building part by 90 degrees on the Yaw (left/right)
 		spawnedPart->AddActorWorldRotation(FRotator(0, 90, 0));
 	}
 }
