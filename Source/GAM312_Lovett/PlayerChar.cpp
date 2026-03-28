@@ -41,6 +41,16 @@ void APlayerChar::BeginPlay()
 
 	// Calls DecreaseStats every 2 seconds in a loop
 	GetWorld()->GetTimerManager().SetTimer(StatsTimerHandle, this, &APlayerChar::DecreaseStats, 2.0f, true);
+
+	// Make sure the objective widget exists before using it
+	if (objWidget)
+	{
+		// Update the built objects UI value (reset or initialize to 0)
+		objWidget->UpdatebuildObj(0.0f);
+
+		// Update the materials collected UI value (reset or initialize to 0)
+		objWidget->UpdatematObj(0.0f);
+	}
 }
 
 // Called every frame
@@ -196,6 +206,12 @@ void APlayerChar::FindObject()
 						// Add the resource to the player's inventory
 						GiveResource(resourceValue, hitName);
 
+						// Increase collected materials by the resource value
+						matsCollected = matsCollected + resourceValue;
+
+						// Update the UI to show the new materials total
+						objWidget->UpdatematObj(matsCollected);
+
 						// Display debug message on screen
 						check(GEngine != nullptr);
 						GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Collected"));
@@ -223,7 +239,14 @@ void APlayerChar::FindObject()
 
 	else
 	{
+		// Stop building state
 		isBuilding = false;
+
+		// Increase the number of objects built
+		objectsBuilt = objectsBuilt + 1.0f;
+
+		// Update the UI to reflect the new object count
+		objWidget->UpdatebuildObj(objectsBuilt);
 	}
 }
 
