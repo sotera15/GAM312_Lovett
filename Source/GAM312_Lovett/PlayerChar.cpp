@@ -181,9 +181,6 @@ void APlayerChar::FindObject()
 			// Try to cast the hit actor to a resource object
 			AResource_M* HitResource = Cast<AResource_M>(HitResult.GetActor());
 
-			// Draw a debug line to visualize the trace (for testing purposes)
-			DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Cyan, false, 3.0f);
-
 			// Check if the player has enough stamina to gather resources
 			if (Stamina > 5.0f)
 			{
@@ -212,10 +209,6 @@ void APlayerChar::FindObject()
 						// Update the UI to show the new materials total
 						objWidget->UpdatematObj(matsCollected);
 
-						// Display debug message on screen
-						check(GEngine != nullptr);
-						GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Collected"));
-
 						// Spawn a decal at the hit location to show impact
 						UGameplayStatics::SpawnDecalAtLocation(GetWorld(), hitDecal, FVector(10.0f, 10.0f, 10.0f), HitResult.Location, FRotator(-90, 0, 0), 2.0f);
 
@@ -226,10 +219,6 @@ void APlayerChar::FindObject()
 					{
 						// If resource is depleted, destroy the object
 						HitResource->Destroy();
-
-						// Display debug message for depletion
-						check(GEngine != nullptr);
-						GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Depleted"));
 
 					}
 				}
